@@ -6,7 +6,7 @@ require_once './config/conexao.php';
 $database = new Conexao();
 $db = $database->getConexao();
 
-$usuario = $_POST;
+$usuario = filter_input_array(INPUT_POST, FILTER_DEFAULT);
 
 $nome = "";
 $email = "";

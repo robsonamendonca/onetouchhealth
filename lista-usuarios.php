@@ -30,10 +30,24 @@ if(!empty($requisicao['search']['value'])){
 }
 
 
-$sql_count_usuarios = "SELECT COUNT(id) AS qtd FROM usuarios";
+$sql_count_usuarios = "SELECT COUNT(*) AS qtd FROM usuarios ";
 $result_qtd_usuarios = $db->prepare($sql_count_usuarios);
-$result_qtd_usuarios->execute();
-$qtd_usuarios = $result_qtd_usuarios->fetch(PDO::FETCH_ASSOC);
+if($flag_filtro == true){
+    $result_qtd_usuarios->execute();
+    $qtd_usuarios_total = $result_qtd_usuarios->fetch(PDO::FETCH_ASSOC);
+    
+    $result_qtd_usuarios_filtro = $db->prepare($sql_count_usuarios . $sql_where);
+    $result_qtd_usuarios_filtro->bindParam(':id', $conteudo_filtro, PDO::PARAM_STR);
+    $result_qtd_usuarios_filtro->bindParam(':nome', $conteudo_filtro, PDO::PARAM_STR);
+    $result_qtd_usuarios_filtro->bindParam(':email', $conteudo_filtro, PDO::PARAM_STR);  
+    $result_qtd_usuarios_filtro->execute();  
+    $qtd_usuarios_filtrada = $result_qtd_usuarios_filtro->fetch(PDO::FETCH_ASSOC);
+
+}else{
+    $result_qtd_usuarios->execute();
+    $qtd_usuarios_total = $result_qtd_usuarios->fetch(PDO::FETCH_ASSOC);   
+    $qtd_usuarios_filtrada = $qtd_usuarios_total;
+}
 
 $sql_usuarios = "SELECT id, nome, email 
                     FROM usuarios
@@ -65,8 +79,8 @@ while ($usuario = $result_usuarios->fetch(PDO::FETCH_ASSOC)) {
 
 $retorno_dados= [
     "draw" => intval($requisicao['draw']), 
-    "recordsTotal" => intval($qtd_usuarios['qtd']), 
-    "recordsFiltered" => isset($lista_usuarios) ? count($lista_usuarios) : 0 , 
+    "recordsTotal" =>intval( $qtd_usuarios_total['qtd']), 
+    "recordsFiltered" => intval( $qtd_usuarios_filtrada['qtd']) , 
     "data" => isset($lista_usuarios) ? $lista_usuarios : [] 
 ];
     

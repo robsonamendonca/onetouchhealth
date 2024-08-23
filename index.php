@@ -19,7 +19,7 @@
         <h1>Listar Usuários</h1>
 
         <span id="message-success"></span>
-        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#novoUsuario">
+        <button type="button" class="btn btn-dark btn-add-user" data-bs-toggle="modal" data-bs-target="#novoUsuario">
           Adicionar Usuário
         </button>
 

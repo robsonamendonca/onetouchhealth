@@ -11,8 +11,8 @@
     "sZeroRecords": "Nenhum registro encontrado",
     "sSearch": "Pesquisar",
     "oPaginate": {
-        "sNext": "<<",
-        "sPrevious": ">>",
+        "sNext": ">>",
+        "sPrevious": "<<",
         "sFirst": "|<",
         "sLast": ">|"
     },
