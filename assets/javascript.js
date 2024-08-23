@@ -41,10 +41,11 @@ $(document).ready(function() {
                     <strong>Info:</strong> ${result['message']}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>`;
+                form.classList.remove('was-validated')    
                 form.reset();
                 btnFechar.click();
                 tabelaUsuarios = $('#tabelaUsuarios').DataTable();
-                tabelaUsuarios.draw();
+                tabelaUsuarios.draw();                
             }else{
                 document.getElementById('message-error').innerHTML = `<div class="alert alert-warning alert-dismissible fade show" role="alert">
                     <strong>Atenção!</strong> ${result['message']}
@@ -81,27 +82,49 @@ $(document).ready(function() {
 
 async function deletarUsuario(id){
     if(id){
-        if(!confirm("Deseja realmente apagar o registro: "+id+", do banco de dados?")){
-            return false;
-        }
-    }
-    const postData = await fetch("deleta-usuario.php?id="+id);
-    const result = await postData.json()
-    if(result['status']){
-        document.getElementById('message-error').innerHTML ="";
-        document.getElementById('message-success').innerHTML = `<div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>Info:</strong> ${result['message']}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>`;
-        tabelaUsuarios = $('#tabelaUsuarios').DataTable();
-        tabelaUsuarios.draw();
-    }else{
-        document.getElementById('message-error').innerHTML ="";
-        document.getElementById('message-success').innerHTML = `<div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>Atenção!</strong> ${result['message']}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>`;
-    }
+        // if(!confirm("Deseja realmente apagar o registro: "+id+", do banco de dados?")){
+        //     return false;
+        // }
+        $.confirm({
+            title: 'Apagar?',
+            content: "Deseja realmente apagar o registro: "+id+", do banco de dados?",
+            type: 'red',
+            typeAnimated: true,
+            buttons: {
+                tryAgain: {
+                    text: 'Confirmar',
+                    btnClass: 'btn-red',
+                    action: async function(){
+                        const postData = await fetch("deleta-usuario.php?id="+id);
+                        const result = await postData.json()
+                        if(result['status']){
+                            document.getElementById('message-error').innerHTML ="";
+                            document.getElementById('message-success').innerHTML = `<div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <strong>Info:</strong> ${result['message']}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>`;
+                            tabelaUsuarios = $('#tabelaUsuarios').DataTable();
+                            tabelaUsuarios.draw();
+                        }else{
+                            document.getElementById('message-error').innerHTML ="";
+                            document.getElementById('message-success').innerHTML = `<div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <strong>Atenção!</strong> ${result['message']}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>`;
+                        }
+                    
+                    }
+                },
+                close: {
+                    text: 'Cancelar',
+                    action: function () 
+                    {
+                        
+                    }    
+                }
+            }
+        });
 
-
+    }
+   
 }
